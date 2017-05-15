@@ -85,6 +85,7 @@
                     <connections>
                         <outlet property="AutomatDisplay" destination="b4M-OW-fKl" id="MIP-bc-le4"/>
                         <outlet property="NoteDisplay" destination="InD-Qn-2ci" id="Oo3-MC-r0A"/>
+                        <outlet property="PressureDisplay" destination="19m-z3-cvZ" id="uqR-m8-0h1"/>
                         <outlet property="StateDisplay" destination="eoA-lk-kxH" id="wXy-PJ-bKA"/>
                         <outlet property="TempDisplay" destination="S3N-tt-0CA" id="5W3-yg-QVe"/>
                     </connections>

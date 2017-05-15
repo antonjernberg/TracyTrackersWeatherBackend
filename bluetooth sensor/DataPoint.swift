@@ -10,8 +10,8 @@ import Foundation
 
 
 struct DataPoint{
-    var temperature: Decimal?
-    var time: Date?
+    var temperature: Decimal!
+    var time: Date!
     
     init(temperature temp: Decimal, time stamp: Date){
         temperature = temp

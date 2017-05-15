@@ -19,8 +19,10 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     let automat = NLAConnectionManager()
     var chip: NLABaseBoard?
     var device : NLAAutomatDevice?
-    var storage = [DataPoint]()
+    var average : Decimal?
+    var storage: [DataPoint] = []
     //var connectionManager : NLAConnectionManager = NLAConnectionManager.sharedConnectionManager()
+    @IBOutlet weak var PressureDisplay: UILabel!
 
     @IBOutlet weak var TempDisplay: UILabel!
     
@@ -41,7 +43,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     // Create a dispatchQueue for the CentralManager. This executes tasks in serial
     let serialQueue = DispatchQueue(label: "queue")
     
-        @IBOutlet weak var NoteDisplay: UILabel! = UILabel()
+    @IBOutlet weak var NoteDisplay: UILabel! = UILabel()
     
     
     @IBOutlet weak var StateDisplay: UILabel! = UILabel()
@@ -53,7 +55,10 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         centralManager = CBCentralManager(delegate: self, queue: serialQueue)
     }
     
-    
+    /**
+    * Connects to the baseboard of the automat device, and calls the method which starts the sensors
+    *
+    **/
     func automatConnected(notification note: Notification){
         NoteDisplay.text = "Notification: \(note.name.rawValue)"
         
@@ -67,35 +72,44 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         chip = automat.automatDevice(withIdentifier: note.userInfo?["automatDeviceIdentifier"] as! String) as? NLABaseBoard
         
         chip?.startClimateSensor(withReadoutRate: 500)
+        StartSensors()
     }
     
+    
+    /**If an automatDeviceWasDiscovered notification is received, execute automatDiscovered method
+    * This method connects to the automat device that was found, using a unique identifier found in the Dictionary contained in the notification
+    */
      func automatDiscovered(notification note: Notification){
-        
-        
-        //AutomatDisplay.text = "Automat connected: \(note.userInfo?["automatDeviceIdentifier"]! ?? "error")"
-        
         automat.connectToDevice(withIdentifier: note.userInfo?["automatDeviceIdentifier"] as! String)
     
     }
     
-    func handler(input: NLAAutomatDeviceData, error: NSError, completion: (_ result:String)-> Void){
-        
-        AutomatDisplay.text = "Something happened"
-
+    func hello(){
+        //Tänkt att vara en handler som tar ut average av existerande data
+    let handler: NLASensorHandler = {(_ sensorData: NLAAutomatDeviceData?, _ error: Error?) -> Void in
+        if error != nil{
+            print("error")
+        }else{
+            
+            self.storage.append(DataPoint(temperature: (self.chip?.climateData.temperature.decimalValue)!, time: Date()))
+            var sum: Decimal = 0.0
+            for var i in self.storage
+            {
+                sum = sum + i.temperature
+            }
+            self.average = sum/(Decimal(self.storage.endIndex+1))
+            self.PressureDisplay.text = "Pressure: \(String(describing: self.average))"
+        }
     }
-
-
-    /*let handler: NLASensorHandler = (data: NLAAutomatDeviceData) -> Void{
-        NotificationCenter.default.post(name: Notification.Name(rawValue: "testing"))
-    }*/
-    
-
+    }
+    /** StartSensors creates and registers a handler for the climate sensors, which prints out temperature and humidity on the screen
+     */
     @IBAction func StartSensors() {
         let handler: NLASensorHandler = {(_ sensorData: NLAAutomatDeviceData?, _ error: Error?) -> Void in
             if error != nil{
                 print("error")
             }else if self.chip != nil{
-                self.AutomatDisplay.text = "Humidity: \(String(describing: self.chip!.climateData.humidity.decimalValue))"
+                self.AutomatDisplay.text = "Humidity: \(String(describing: self.chip!.climateData.humidity.decimalValue))%"
                 self.TempDisplay.text = "Temperature: \(String(describing: self.chip!.climateData.temperature.decimalValue))"
             }
             else{
@@ -106,24 +120,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
 
     }
     
- //r handler = {(NLAAutomatDeviceData, Error?)-> Void in
-        //print("hello")}
-        
-            
-        
-       /* NLASensorHandler:@escaping (NLAAutomatDeviceData, Error?)-> Void in {
-        
-        print("hey")})*/
-        
-            
-            //chip!.registerClimateSensorHandler()
-        
-                
  
-            //tempe = chip?.climateData.humidity.decimalValue
-            //data = DataPoint(temperature: (chip?.climateData.temperature.decimalValue)!, time: Date())
-            //storage[storage.endIndex+1] = data!
-    
     
     
     override func viewDidLoad() {
@@ -142,8 +139,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         
         NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "automatDeviceWasDiscovered"), object: nil, queue: OperationQueue.main, using: automatDiscovered(notification:))
         
-        NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "testing"), object: nil, queue: OperationQueue.main, using: automatDiscovered(notification:))
-        
+
         
         // Do any additional setup after loading the view, typically from a nib.
     }
