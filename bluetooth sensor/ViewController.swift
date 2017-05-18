@@ -14,32 +14,22 @@ import Foundation
 
 class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDelegate	{
     
-    var centralManager : CBCentralManager!
-    var connectingPeripheral : CBPeripheral!
-    let automat = NLAConnectionManager()
-    var chip: NLABaseBoard?
-    var device : NLAAutomatDevice?
-    var average : Decimal?
-    var storage: [DataPoint] = []
+    var automat: AutomatCommunication = AutomatCommunication()
+    
+    
+    
+    
+    
     //var connectionManager : NLAConnectionManager = NLAConnectionManager.sharedConnectionManager()
     @IBOutlet weak var PressureDisplay: UILabel!
 
     @IBOutlet weak var TempDisplay: UILabel!
     
     @IBAction func blink(_ sender: UIButton) {
-        if chip != nil {
-            StateDisplay.text = "Chip är satt"
-            let blinkSequence = NLADigitalBlinkSequence()
-            blinkSequence.nrOfBlinks = 5
-            blinkSequence.outputPeriod = 1000
-            blinkSequence.outputRatio = 50
-            blinkSequence.addDigitalPort(NLABaseBoardIOPort.blueLED)
-           
-            
-            chip!.write(blinkSequence)
-        }
+        automat.blink()
     }
 
+    
     // Create a dispatchQueue for the CentralManager. This executes tasks in serial
     let serialQueue = DispatchQueue(label: "queue")
     
@@ -49,48 +39,19 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     @IBOutlet weak var StateDisplay: UILabel! = UILabel()
     
     @IBOutlet weak var AutomatDisplay: UILabel! = UILabel()
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder:  aDecoder)
-        centralManager = CBCentralManager(delegate: self, queue: serialQueue)
-    }
-    
-    /**
-    * Connects to the baseboard of the automat device, and calls the method which starts the sensors
-    *
-    **/
-    func automatConnected(notification note: Notification){
-        NoteDisplay.text = "Notification: \(note.name.rawValue)"
-        
-        device = automat.automatDevice(withIdentifier: note.userInfo?["automatDeviceIdentifier"] as! String)
-        if device != nil {
-            StateDisplay.text = "Device satt"
-        }else{
-            StateDisplay.text = "Device ej satt"
-        }
-        
-        chip = automat.automatDevice(withIdentifier: note.userInfo?["automatDeviceIdentifier"] as! String) as? NLABaseBoard
-        
-        chip?.startClimateSensor(withReadoutRate: 500)
-        StartSensors()
-    }
+
+
     
     
-    /**If an automatDeviceWasDiscovered notification is received, execute automatDiscovered method
-    * This method connects to the automat device that was found, using a unique identifier found in the Dictionary contained in the notification
-    */
-     func automatDiscovered(notification note: Notification){
-        automat.connectToDevice(withIdentifier: note.userInfo?["automatDeviceIdentifier"] as! String)
     
-    }
+
     
-    func hello(){
+  /*  func hello(){
         //Tänkt att vara en handler som tar ut average av existerande data
     let handler: NLASensorHandler = {(_ sensorData: NLAAutomatDeviceData?, _ error: Error?) -> Void in
         if error != nil{
             print("error")
         }else{
-            
             self.storage.append(DataPoint(temperature: (self.chip?.climateData.temperature.decimalValue)!, time: Date()))
             var sum: Decimal = 0.0
             for var i in self.storage
@@ -98,34 +59,27 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
                 sum = sum + i.temperature
             }
             self.average = sum/(Decimal(self.storage.endIndex+1))
-            self.PressureDisplay.text = "Pressure: \(String(describing: self.average))"
+            self.PressureDisplay.text = "Pressure: \(String(describing: self.average)) Counts: \(self.storage.endIndex)"
         }
     }
-    }
+    }*/
     /** StartSensors creates and registers a handler for the climate sensors, which prints out temperature and humidity on the screen
      */
-    @IBAction func StartSensors() {
-        let handler: NLASensorHandler = {(_ sensorData: NLAAutomatDeviceData?, _ error: Error?) -> Void in
-            if error != nil{
-                print("error")
-            }else if self.chip != nil{
-                self.AutomatDisplay.text = "Humidity: \(String(describing: self.chip!.climateData.humidity.decimalValue))%"
-                self.TempDisplay.text = "Temperature: \(String(describing: self.chip!.climateData.temperature.decimalValue))"
-            }
-            else{
-                print("Chip is nil")
-            }
-        }
-            chip?.registerClimateSensorHandler(handler)
 
+    @IBAction func ReadData() {
+        automat.readData()
     }
-    
+    func connectionInfoUpdate(notification note: Notification){
+        StateDisplay.text = String(describing: note.object!)
+    }
  
-    
+    func dataUpdate(notification note: Notification){
+        PressureDisplay.text = "Pressure: \(String(describing:note.object!))"
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        switch centralManager.state{
+        /*switch centralManager.state{
         case .poweredOn:
             StateDisplay.text = "Bluetooth: on"
             
@@ -133,11 +87,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
             StateDisplay.text = "Bluetooth: off"
         default:
             StateDisplay.text = "State:unset -"
-        }
-        automat.startScanningForAutomatDevices()
-        NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "automatDeviceDidConnect"), object: nil, queue: OperationQueue.main, using: automatConnected(notification:))
+        }*/
+        //automat.startScanningForAutomatDevices()
+        NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "automatConnectionInfo"), object: nil, queue: OperationQueue.main, using: connectionInfoUpdate(notification:))
         
-        NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "automatDeviceWasDiscovered"), object: nil, queue: OperationQueue.main, using: automatDiscovered(notification:))
+        NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "automatNewValue"), object: nil, queue: OperationQueue.main, using: dataUpdate(notification:))
+        //NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "automatDeviceWasDiscovered"), object: nil, queue: OperationQueue.main, using: automatDiscovered(notification:))
         
 
         

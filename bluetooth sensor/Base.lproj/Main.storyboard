@@ -74,9 +74,9 @@
                                 <rect key="frame" x="0.0" y="93" width="108" height="111"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.67150847656587453" green="0.86178957612472318" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <state key="normal" title="StartSensors"/>
+                                <state key="normal" title="ReadData"/>
                                 <connections>
-                                    <action selector="StartSensors" destination="BYZ-38-t0r" eventType="touchUpInside" id="AIl-pD-Pun"/>
+                                    <action selector="ReadData" destination="BYZ-38-t0r" eventType="touchUpInside" id="MCx-MF-b97"/>
                                 </connections>
                             </button>
                         </subviews>
