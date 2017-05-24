@@ -48,7 +48,7 @@ class AutomatCommunication {
     var P8: Int16!
     var P9: Int16!
     
-    // A value used for compensating pressure and humidity. It calculated when compensating temperature
+    // A value used for compensating pressure and humidity. It is calculated when compensating temperature
     var t_fine: Int32 = 0
     
     
@@ -67,6 +67,7 @@ class AutomatCommunication {
     
     /**
      * Starts up the local storage, initiates constants, and attempts to connect to a nearby Automat
+     *
      **/
     init() {
         startAutomatConnection()
