@@ -17,6 +17,7 @@
 		3A0EBF851EC4D42A00306C08 /* NeueLabsAutomat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A0EBF811EC498A100306C08 /* NeueLabsAutomat.framework */; };
 		3A0EBF861EC4D47900306C08 /* NeueLabsAutomat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A0EBF811EC498A100306C08 /* NeueLabsAutomat.framework */; };
 		3A0EBF871EC4D47900306C08 /* NeueLabsAutomat.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3A0EBF811EC498A100306C08 /* NeueLabsAutomat.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3A1352F21ED5C39D004A8E39 /* Compensations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1352F11ED5C39C004A8E39 /* Compensations.swift */; };
 		3A55FC541EC65AF9006C38F9 /* DataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A55FC531EC65AF9006C38F9 /* DataPoint.swift */; };
 		3AA91C0B1ECCBB1200A638B4 /* bme280_support.c in Sources */ = {isa = PBXBuildFile; fileRef = 3AA91C081ECCBB1200A638B4 /* bme280_support.c */; };
 		3AA91C0C1ECCBB1200A638B4 /* bme280.c in Sources */ = {isa = PBXBuildFile; fileRef = 3AA91C091ECCBB1200A638B4 /* bme280.c */; };
@@ -47,6 +48,7 @@
 		3A09D8C91EC3BA8300108BDA /* AutomatCommunication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutomatCommunication.swift; sourceTree = "<group>"; };
 		3A09D8CE1EC3C25800108BDA /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		3A0EBF811EC498A100306C08 /* NeueLabsAutomat.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NeueLabsAutomat.framework; path = System/Library/Frameworks/NeueLabsAutomat.framework; sourceTree = SDKROOT; };
+		3A1352F11ED5C39C004A8E39 /* Compensations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compensations.swift; sourceTree = "<group>"; };
 		3A55FC531EC65AF9006C38F9 /* DataPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPoint.swift; sourceTree = "<group>"; };
 		3AA91C081ECCBB1200A638B4 /* bme280_support.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bme280_support.c; path = ../bme280_support.c; sourceTree = "<group>"; };
 		3AA91C091ECCBB1200A638B4 /* bme280.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bme280.c; path = ../bme280.c; sourceTree = "<group>"; };
@@ -92,8 +94,7 @@
 			children = (
 				3A09D8B71EC3B94800108BDA /* AppDelegate.swift */,
 				3A09D8B91EC3B94800108BDA /* ViewController.swift */,
-				3A55FC531EC65AF9006C38F9 /* DataPoint.swift */,
-				3A09D8C91EC3BA8300108BDA /* AutomatCommunication.swift */,
+				3A1352F31ED5CB03004A8E39 /* Model */,
 				3A09D8BB1EC3B94900108BDA /* Main.storyboard */,
 				3A09D8BE1EC3B94900108BDA /* Assets.xcassets */,
 				3A09D8C01EC3B94900108BDA /* LaunchScreen.storyboard */,
@@ -109,6 +110,16 @@
 				3A09D8CE1EC3C25800108BDA /* CoreBluetooth.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3A1352F31ED5CB03004A8E39 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3A55FC531EC65AF9006C38F9 /* DataPoint.swift */,
+				3A09D8C91EC3BA8300108BDA /* AutomatCommunication.swift */,
+				3A1352F11ED5C39C004A8E39 /* Compensations.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,9 +199,7 @@
 			files = (
 				3A09D8BA1EC3B94800108BDA /* ViewController.swift in Sources */,
 				3A09D8B81EC3B94800108BDA /* AppDelegate.swift in Sources */,
-				3AA91C0B1ECCBB1200A638B4 /* bme280_support.c in Sources */,
 				3A55FC541EC65AF9006C38F9 /* DataPoint.swift in Sources */,
-				3AA91C0C1ECCBB1200A638B4 /* bme280.c in Sources */,
 				3A09D8CA1EC3BA8300108BDA /* AutomatCommunication.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
