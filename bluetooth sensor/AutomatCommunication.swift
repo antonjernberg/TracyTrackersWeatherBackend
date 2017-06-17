@@ -9,13 +9,12 @@
 import Foundation
 import NeueLabsAutomat
 
-
 class AutomatCommunication {
     // A timer used to continuously update pressure every 30 min
     private var timer: Timer?
     private var timerForCountingAverage: Timer?
     private var arrayForCountingAverage: [Double]?
-    private var compensations: Compensations = Compensations()
+    var compensations: Compensations = Compensations()
     
     // An object representing a connection manager used to connect with the Automat board
     private let automatConnectionManager = NLAConnectionManager()
@@ -177,7 +176,7 @@ class AutomatCommunication {
         let calibPress: NLAI2CMutableReadData = NLAI2CMutableReadData.init(address: 0x76, expectedResponseLength: 18)
         
         calibTemp.addI2CCommand(0x88)
-        calibPress.addI2CCommand(0x8D)
+        calibPress.addI2CCommand(0x8E)
         automatBaseboard!.readI2CCommand(calibTemp, withHandler: temperatureCalibrationParameterHandler)
         automatBaseboard!.readI2CCommand(calibPress, withHandler: pressureCalibrationParameterHandler)
         timer = Timer.scheduledTimer(timeInterval: 70, target: self, selector: #selector(startMeasurementCycle), userInfo: nil, repeats: true)
@@ -200,6 +199,7 @@ class AutomatCommunication {
         if(arrayForCountingAverage == nil){
             arrayForCountingAverage = [Double]()
         }
+        print("Measurement \(arrayForCountingAverage!.endIndex)")
         readData()
         sleep(1)
         if(arrayForCountingAverage!.endIndex >= 4){
@@ -224,7 +224,7 @@ class AutomatCommunication {
             // If less than half an hour (1800) has passed since the first DataPoint, do not calculate a new average.
             if(self.pressureStorage.last != nil){
                 let first = self.pressureStorage.first!
-                if (first.time.timeIntervalSinceNow < (-1800)){  // 1800 = 30 min 900 = 15 min
+                if (first.time.timeIntervalSinceNow < (-600)){  // 1800 = 30 min 900 = 15 min
                     let last = self.pressureStorage.last!
                     // (Pressure difference) / ((Seconds between first and last measurement) / 3600)
                     self.averageChangeOfPressurePerHour = ((last.pressure/100) - (first.pressure/100)) / ((-(first.time.timeIntervalSinceNow - last.time.timeIntervalSinceNow)) / 3600)
@@ -292,12 +292,12 @@ class AutomatCommunication {
                     let temperature : Int32! = Int32((((UInt32((responseData!.responses[3] as! UInt8)))<<12)) | ((UInt32((responseData!.responses[4] as! UInt8)))<<4)|(UInt32(responseData!.responses[5] as! UInt8)>>4))
                     
                     
-                    // Temperature has to be calculated, but is not needed for weather forecasting, it is therefore only printed to console
+                    // Temperature has to be calculated, but is not needed for weather forecasting, it is theref	ore only printed to console
                     print("Temperature: \(self.compensations.compensateTemperatureMeasurement(temperature))")
                     
                     
                     let newPressure = self.compensations.compensatePressureMeasurement(pressure)
-                    print("Pressure: \(newPressure) Pressure divided by 256: \(newPressure/256)")
+                    print("Pressure: \(newPressure) dividedPressure:\(newPressure/256)")
                     if(self.arrayForCountingAverage != nil){
                         self.arrayForCountingAverage!.append(Double(newPressure))
                     }

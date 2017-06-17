@@ -27,7 +27,6 @@ struct Compensations{
     private var P9: Int16?
     private var initialized = false
     init(){
-        
     }
     /**
      * Sets all pressure parameters.
@@ -123,7 +122,7 @@ struct Compensations{
         if(initialized){
             if t_fine != 0{
                 /* 32-BIT COMPENSATION FORMULA returns UInt32 */
-                
+                /*
                 var x1 : Int32 = 0
                 var x2 : Int32 = 0
                 var comp : UInt32 = 0
@@ -150,60 +149,60 @@ struct Compensations{
                 comp = UInt32(Int32(comp) + ((x1 + x2 + Int32(P7!)) >> 4))
                 
                 return comp
-                
+                */
                 /*   DOUBLE COMPENSATION FORMULA  returns Double */
-                /*
+            /*
                  var x1: Double = 0
                  var x2: Double = 0
                  var comp: Double = 0
                  
                  x1 = (Double(t_fine)/2.0) - 64000.0
-                 x2 = x1 * x1 * (Double(P6)) / 32768.0
-                 x2 = x2 * x1 * (Double(P5)) * 2.0
-                 x2 = (x2/4.0) + ((Double(P4)) * 65536.0)
-                 x1 = ((Double(P3)) * x1 * x1 / 524288.0 + (Double(P2)) * x1) / 524288.0
-                 x1 = (1.0 + x1 / 32768.0) * (Double(P1))
+                 x2 = x1 * x1 * (Double(P6!)) / 32768.0
+                 x2 = x2 * x1 * (Double(P5!)) * 2.0
+                 x2 = (x2/4.0) + ((Double(P4!)) * 65536.0)
+                 x1 = ((Double(P3!)) * x1 * x1 / 524288.0 + (Double(P2!)) * x1) / 524288.0
+                 x1 = (1.0 + x1 / 32768.0) * (Double(P1!))
                  if(x1 == 0.0){
                  return 0.0
                  }
                  
                  comp = 1048576.0 - Double(uncomp)
                  comp = (comp - (x2 / 4096.0)) * 6250.0 / x1
-                 x1 = (Double(P9)) * comp * comp / 2147483648.0
-                 x2 = comp * (Double(P8)) / 32768.0
-                 comp = comp + (x1 + x2 + (Double(P7))) / 16.0
+                 x1 = (Double(P9!)) * comp * comp / 2147483648.0
+                 x2 = comp * (Double(P8!)) / 32768.0
+                 comp = comp + (x1 + x2 + (Double(P7!))) / 16.0
                  return comp
                  
-                 */
+                */
                 
                 
                 
                 /*   64-BIT COMPENSATION FORMULA returns UInt32 */
-                /*
+                
                  var x1: Int64 = 0
                  var x2: Int64 = 0
                  var comp: Int64 = 0
                  
                  x1 = (Int64(t_fine)) - 128000   //1
-                 x2 = x1 * x1 * Int64(P6) //2
-                 x2 = x2 + ((x1 * Int64(P5)) << 17)  //3
-                 x2 = x2 + (Int64(P4) << 35)    //4
-                 x1 = ((x1 * x1 * Int64(P3))>>8) + ((x1 * Int64(P2)) << 12) //5
-                 x1 = (((Int64(1) << 47) + x1) * Int64(P1)) >> 33
+                 x2 = x1 * x1 * Int64(P6!) //2
+                 x2 = x2 + ((x1 * Int64(P5!)) << 17)  //3
+                 x2 = x2 + (Int64(P4!) << 35)    //4
+                 x1 = ((x1 * x1 * Int64(P3!))>>8) + ((x1 * Int64(P2!)) << 12) //5
+                 x1 = (((Int64(1) << 47) + x1) * Int64(P1!)) >> 33
                  if (x1 == 0){
                  return 0
                  } //7
                  comp = Int64(1048576) - Int64(uncomp) //8
                  comp = (((comp << 31) - x2) * 3125) / x1 //9
                  
-                 x1 = (Int64(P9) * (comp >> 13) * (comp >> 13)) >> 25 //10
-                 x2 = (Int64(P8) * comp) >> 19 //11
-                 comp = ((comp + x1 + x2) >> 8) + ((Int64(P7)) << 4) //12
+                 x1 = (Int64(P9!) * (comp >> 13) * (comp >> 13)) >> 25 //10
+                 x2 = (Int64(P8!) * comp) >> 19 //11
+                 comp = ((comp + x1 + x2) >> 8) + ((Int64(P7!)) << 4) //12
                  
                  return UInt32(comp)
                  
                  
-                 */
+                
                 
                 
             }else{
